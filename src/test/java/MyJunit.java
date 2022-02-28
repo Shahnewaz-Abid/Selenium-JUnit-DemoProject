@@ -1,6 +1,7 @@
 import com.beust.ah.A;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -157,7 +158,7 @@ public class MyJunit {
         WebElement imgElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//header/a[1]/img[1]")));
         Boolean status = imgElement.isDisplayed();
         //Boolean status = driver.findElement(By.xpath("//header/a[1]/img[1]")).isDisplayed();
-        Assert.assertEquals(true,status);
+        Assert.assertEquals(true, status);
         driver.close();
         driver.switchTo().window(newTab.get(0));
     }
@@ -208,9 +209,9 @@ public class MyJunit {
         WebElement table = driver.findElement(By.className("rt-tbody"));
         List<WebElement> allRows = table.findElements(By.className("rt-tr"));
         int i = 0;
-        for(WebElement row : allRows) {
+        for (WebElement row : allRows) {
             List<WebElement> cells = row.findElements(By.className("rt-td"));
-            for(WebElement cell : cells) {
+            for (WebElement cell : cells) {
                 i++;
                 System.out.println("num[" + i + "] " + cell.getText());
             }
@@ -262,17 +263,17 @@ public class MyJunit {
     @Test
     public void takeScreenshot() throws IOException {
         driver.get("https://demoqa.com");
-        File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         String time = new SimpleDateFormat("dd-MM-yyyy-hh-ss-ss-aa").format(new Date());
         String fileWithPath = "./src/test/resources/screenshots/" + time + ".png";
         File DestFile = new File(fileWithPath);
         FileUtils.copyFile(screenshotFile, DestFile);
     }
 
-    public void readFromExcel(String filePath,String fileName,String sheetName) throws IOException{
+    public void readFromExcel(String filePath, String fileName, String sheetName) throws IOException {
 
         //Create an object of File class to open xlsx file
-        File file = new File(filePath+"\\"+fileName);
+        File file = new File(filePath + "\\" + fileName);
 
         //Create an object of FileInputStream class to read excel file
         FileInputStream inputStream = new FileInputStream(file);
@@ -284,7 +285,7 @@ public class MyJunit {
 
 
         //Check condition if the file is xls file
-        if(fileExtensionName.equals(".xls")){
+        if (fileExtensionName.equals(".xls")) {
 
             //If it is xls file then create object of HSSFWorkbook class
             workbook = new HSSFWorkbook(inputStream);
@@ -295,18 +296,22 @@ public class MyJunit {
         Sheet sheet = workbook.getSheet(sheetName);
 
         //Find number of rows in excel file
-        int rowCount = sheet.getLastRowNum()-sheet.getFirstRowNum();
+        int rowCount = sheet.getLastRowNum() - sheet.getFirstRowNum();
 
         //Create a loop over all the rows of excel file to read it
-        for (int i = 0; i < rowCount+1; i++) {
+        for (int i = 0; i < rowCount + 1; i++) {
 
             Row row = sheet.getRow(i);
 
             //Create a loop to print cell values in a row
             for (int j = 0; j < row.getLastCellNum(); j++) {
 
-                //Print Excel data in console
-                System.out.print(row.getCell(j).getStringCellValue()+"|| ");
+                //Print any type data from excel in console
+                DataFormatter formatter = new DataFormatter();
+                System.out.print(formatter.formatCellValue(row.getCell(j)) + "|| ");
+
+                //Print String type from Excel in console
+                //System.out.print(row.getCell(j).getStringCellValue()+"|| ");
 
             }
 
